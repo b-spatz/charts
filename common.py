@@ -12,40 +12,6 @@ import cycle
 import projection
 
 
-class Area:
-    """Represents a geographic rectangular area with longitude and latitude bounds."""
-
-    def __init__(self, lon_min, lat_max, lon_max, lat_min):
-        """
-        Initialize an Area.
-
-        Args:
-            lon_min: Western longitude bound (most negative)
-            lat_max: Northern latitude bound (most positive)
-            lon_max: Eastern longitude bound (most positive)
-            lat_min: Southern latitude bound (most negative)
-        """
-        self.lon_min = lon_min
-        self.lon_max = lon_max
-        self.lat_min = lat_min
-        self.lat_max = lat_max
-
-    def overlaps(self, other):
-        """
-        Check if this area overlaps with another area.
-
-        Args:
-            other: Another Area object
-
-        Returns:
-            True if the areas overlap, False otherwise
-        """
-        # Two rectangles overlap if they overlap in both dimensions
-        lon_overlap = self.lon_max >= other.lon_min and self.lon_min <= other.lon_max
-        lat_overlap = self.lat_max >= other.lat_min and self.lat_min <= other.lat_max
-        return lon_overlap and lat_overlap
-
-
 def list_crawl(url, match):
     charts = []
     html_page = urllib.request.urlopen(url)
@@ -121,15 +87,15 @@ def zip_charts(list_of_all_tiles, chart):
     # US geo regions
     regions = ["AK", "PAC", "NW", "SW", "NC", "EC", "SC", "NE", "SE"]
     region_coordinates = [
-        Area(-180, 71, -126, 51),   # AK
-        Area(-162, 24, -152, 18),   # PAC
-        Area(-125, 50, -103, 40),   # NW
-        Area(-125, 40, -103, 15),   # SW
-        Area(-105, 50, -90,  37),   # NC
-        Area(-95,  50, -80,  37),   # EC
-        Area(-110, 37, -90,  15),   # SC
-        Area(-80,  50, -60,  37),   # NE
-        Area(-90,  37, -60,  15),   # SE
+        (-180, 71, -126, 51),   # AK
+        (-162, 24, -152, 18),   # PAC
+        (-125, 50, -103, 40),   # NW
+        (-125, 40, -103, 15),   # SW
+        (-105, 50, -90,  37),   # NC
+        (-95,  50, -80,  37),   # EC
+        (-110, 37, -90,  15),   # SC
+        (-80,  50, -60,  37),   # NE
+        (-90,  37, -60,  15),   # SE
     ]
     zip_files = []
     manifest_files = []
@@ -154,11 +120,14 @@ def zip_charts(list_of_all_tiles, chart):
         x_tile = int(tokens[len(tokens) - 2])
         z_tile = int(tokens[len(tokens) - 3])
         lon_min, lat_max, lon_max, lat_min = projection.findBounds(x_tile, y_tile, z_tile)
-        tile_area = Area(lon_min, lat_max, lon_max, lat_min)
 
         # include zoom 7 and below in every chart
         for count in range(len(regions)):
-            if region_coordinates[count].overlaps(tile_area) or z_tile <= 7:
+            region_lon_min, region_lat_max, region_lon_max, region_lat_min = region_coordinates[count]
+            # Check if tile overlaps region anywhere
+            lon_overlap = lon_max >= region_lon_min and lon_min <= region_lon_max
+            lat_overlap = lat_max >= region_lat_min and lat_min <= region_lat_max
+            if (lon_overlap and lat_overlap) or z_tile <= 7:
                 zip_files[count].write(tile)
                 manifest_files[count].write(tile + "\n")
 
