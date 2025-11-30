@@ -88,6 +88,6 @@ def yMetersToTile(zoom, my):
 def findBounds(x, y, zoom):
     lonU = metersToLon(xPixelsToMeters(zoom, x * SIZE))
     lonL = metersToLon(xPixelsToMeters(zoom, (x + 1) * SIZE))
-    latU = metersToLat(yPixelsToMeters(zoom, y * SIZE))
-    latL = metersToLat(yPixelsToMeters(zoom, (y + 1) * SIZE))
-    return lonU, latU, lonL, latL
+    latL = metersToLat(yPixelsToMeters(zoom, y * SIZE))
+    latU = metersToLat(yPixelsToMeters(zoom, (y + 1) * SIZE))
+    return lonU, latL, lonL, latU

@@ -119,7 +119,9 @@ def zip_charts(list_of_all_tiles, chart):
         y_tile = int(tokens[len(tokens) - 1].split(".")[0])
         x_tile = int(tokens[len(tokens) - 2])
         z_tile = int(tokens[len(tokens) - 3])
-        lon_min, lat_max, lon_max, lat_min = projection.findBounds(x_tile, y_tile, z_tile)
+        lon_min, lat_min, lon_max, lat_max = projection.findBounds(x_tile, y_tile, z_tile)
+        assert lon_min <= lon_max, f"lon_min={lon_min} > lon_max={lon_max}"
+        assert lat_min <= lat_max, f"lat_min={lat_min} > lat_max={lat_max}"
 
         # include zoom 7 and below in every chart
         for count in range(len(regions)):
