@@ -1,6 +1,8 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
+# 2026-01-11, bspatz: fiddle with atrifacts, inspect for Skyline inclusion and VRT?
+
 name: FLY
 
 on:
@@ -47,6 +49,7 @@ jobs:
 
     - name: SSH to mamba
       uses: appleboy/scp-action@v0.1.7
+      if: false
       with:
         host: apps4av.org
         username: apps4av
