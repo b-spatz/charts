@@ -4,8 +4,9 @@
 name: FLY
 
 on:
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch:
+#  pull_request:
+#    branches: [ "master" ]
 
 permissions:
   contents: read
@@ -47,6 +48,7 @@ jobs:
 
     - name: SSH to mamba
       uses: appleboy/scp-action@v0.1.7
+      if: false
       with:
         host: apps4av.org
         username: apps4av
